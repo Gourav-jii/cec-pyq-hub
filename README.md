@@ -1,16 +1,56 @@
-# React + Vite
+# CEC PYQ Hub
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Previous year question papers portal for Chaibasa Engineering College (CEC), affiliated with Jharkhand University of Technology (JUT), Ranchi.
 
-Currently, two official plugins are available:
+Students can filter papers by branch and semester, preview question papers directly in the browser, download PDFs, and upload papers from recent exams.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Supported Branches
+- CSE (Computer Science & Engineering)
+- ECE (Electronics & Communication)
+- EE (Electrical Engineering)
+- ME (Mechanical Engineering)
+- CE (Civil Engineering)
 
-## React Compiler
+## Tech Stack
+- React + Vite
+- Node.js & Express
+- MongoDB Atlas
+- Cloudinary (PDF & Image hosting)
+- Vercel
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Local Setup
 
-## Expanding the Oxlint configuration
+1. Install dependencies:
+```bash
+npm install
+cd server
+npm install
+cd ..
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+2. Create `server/.env` (refer to `server/.env.example`):
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+
+3. Start development servers:
+```bash
+# Frontend
+npm run dev
+
+# Backend (in a separate terminal)
+cd server
+npm run dev
+```
+
+Frontend: http://localhost:5173  
+Backend: http://localhost:5000
+
+## Deploy on Vercel
+1. Import the repository in Vercel.
+2. Add environment variables (`MONGODB_URI`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`).
+3. Click Deploy.
