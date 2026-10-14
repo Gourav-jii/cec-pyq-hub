@@ -63,11 +63,25 @@ export async function uploadPaperToServer(paperData, file) {
             fileUrl = cldJson.secure_url;
             cloudinaryPublicId = cldJson.public_id;
             fileType = cldJson.format ? `application/${cldJson.format}` : fileType;
+          } else {
+            const cldErr = await cldUploadRes.json().catch(() => ({}));
+            const errMsg = cldErr.error?.message || `Cloudinary upload failed (${cldUploadRes.status})`;
+            throw new Error(errMsg);
           }
+        } else {
+          throw new Error('Could not get upload signature from server');
         }
       }
     } catch (directErr) {
-      console.warn('Direct Cloudinary signed upload skipped, trying standard upload:', directErr.message);
+      console.warn('Direct Cloudinary signed upload error:', directErr.message);
+      // If error is about file size or API key, don't fallback to Vercel (will 413)
+      if (
+        directErr.message.includes('File size') ||
+        directErr.message.includes('API Key') ||
+        directErr.message.includes('exceeds')
+      ) {
+        throw directErr;
+      }
     }
 
     // Step 2: If Direct Upload Succeeded, save metadata JSON to MongoDB Atlas

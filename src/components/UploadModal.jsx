@@ -18,20 +18,31 @@ export default function UploadModal({
   const [fileDataUrl, setFileDataUrl] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
 
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB Cloudinary Free Tier Limit
+
   const handleFileChange = (file) => {
     if (!file) return;
-    if (file.size > 20 * 1024 * 1024) {
-      setErrorMsg('File size must be under 20MB');
+    if (file.size > MAX_FILE_SIZE) {
+      setErrorMsg(
+        `File size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 10MB limit. Please compress your PDF (e.g. using iLovePDF) before uploading.`
+      );
+      setSelectedFile(null);
+      setFileDataUrl(null);
       return;
     }
     setSelectedFile(file);
     setErrorMsg('');
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setFileDataUrl(e.target.result);
-    };
-    reader.readAsDataURL(file);
+    // Only read Data URL for small files (<2MB) to save mobile browser memory
+    if (file.size <= 2 * 1024 * 1024) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFileDataUrl(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setFileDataUrl(null);
+    }
   };
 
   const handleSubmit = (e) => {
