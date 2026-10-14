@@ -40,6 +40,10 @@ export default function UploadModal({
       setErrorMsg('Please enter Subject Name');
       return;
     }
+    if (!selectedFile && !fileDataUrl) {
+      setErrorMsg('Please select a PDF or Image file to upload');
+      return;
+    }
 
     const branchObj = BRANCHES.find((b) => b.id === branch);
 

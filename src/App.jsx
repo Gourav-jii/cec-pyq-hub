@@ -42,13 +42,24 @@ export default function App() {
   // Papers state (hydrates from MongoDB / IndexedDB)
   const [papers, setPapers] = useState(getStoredPapers);
 
-  // Load papers on mount
+  // Load papers on mount and on window focus (auto-sync across all users)
   useEffect(() => {
-    fetchAllPapers().then((loadedPapers) => {
-      if (Array.isArray(loadedPapers)) {
-        setPapers(loadedPapers);
-      }
-    });
+    const syncPapers = () => {
+      fetchAllPapers().then((loadedPapers) => {
+        if (Array.isArray(loadedPapers)) {
+          setPapers(loadedPapers);
+        }
+      });
+    };
+
+    syncPapers();
+    window.addEventListener('focus', syncPapers);
+    const interval = setInterval(syncPapers, 15000); // sync every 15s
+
+    return () => {
+      window.removeEventListener('focus', syncPapers);
+      clearInterval(interval);
+    };
   }, []);
 
   // Filters
@@ -68,22 +79,33 @@ export default function App() {
     setToast({ message, type });
     setTimeout(() => {
       setToast((prev) => (prev?.message === message ? null : prev));
-    }, 3200);
+    }, 3500);
   };
 
-  // Handle Upload (Uploads to Cloudinary & saves to MongoDB)
+  // Handle Upload (Uploads to Cloudinary & saves to MongoDB Atlas)
   const handleUploadSuccess = async (newPaper, selectedFile) => {
     setIsUploadOpen(false);
-    showToast(`Uploading "${newPaper.subjectName}"...`, 'info');
+    showToast(`Uploading "${newPaper.subjectName}" to cloud...`, 'info');
 
     const result = await uploadPaperToServer(newPaper, selectedFile);
-    const paperToSave = result.paper || newPaper;
-
-    const updated = [paperToSave, ...papers.filter((p) => p.id !== paperToSave.id)];
-    setPapers(updated);
-    savePapers(updated);
-
-    showToast(`"${paperToSave.subjectName}" PYQ paper upload ho gaya!`, 'success');
+    if (result && result.cloud) {
+      const refreshed = await fetchAllPapers();
+      if (Array.isArray(refreshed) && refreshed.length > 0) {
+        setPapers(refreshed);
+      } else {
+        const paperToSave = result.paper || newPaper;
+        const updated = [paperToSave, ...papers.filter((p) => p.id !== paperToSave.id)];
+        setPapers(updated);
+        savePapers(updated);
+      }
+      showToast(`"${newPaper.subjectName}" upload ho gaya! Sabhi students ko live dikhega.`, 'success');
+    } else {
+      const paperToSave = result.paper || newPaper;
+      const updated = [paperToSave, ...papers.filter((p) => p.id !== paperToSave.id)];
+      setPapers(updated);
+      savePapers(updated);
+      showToast(`Warning: Cloud upload failed (${result.fallbackMessage || 'check connection'}). Saved locally.`, 'error');
+    }
   };
 
   // Handle Delete (Deletes from MongoDB & Cloudinary)
