@@ -1475,3 +1475,99 @@ img {
     max-width: none;
   }
 }
+
+/* ==========================================================================
+   PAPER VIEWER MODAL - MOBILE OPTIMIZED
+   ========================================================================== */
+
+.paper-viewer-modal-content {
+  background: #ffffff;
+  border-radius: 14px;
+  width: 95%;
+  max-width: 980px;
+  height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+.paper-viewer-header {
+  padding: 12px 18px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.paper-viewer-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  overflow-x: auto;
+  background: #0b1120;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  -webkit-overflow-scrolling: touch;
+}
+
+.paper-viewer-footer {
+  padding: 10px 16px;
+  background: #1e293b;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .modal-overlay.viewer-overlay {
+    padding: 0 !important;
+  }
+
+  .paper-viewer-modal-content {
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+  }
+
+  .paper-viewer-header {
+    padding: 10px 12px !important;
+  }
+
+  .paper-viewer-header h3 {
+    font-size: 0.95rem !important;
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .paper-viewer-body {
+    padding: 8px 4px !important;
+  }
+
+  .paper-viewer-doc-img {
+    width: 100% !important;
+    border-radius: 4px !important;
+  }
+
+  .btn-print-hide {
+    display: none !important;
+  }
+
+  .viewer-zoom-bar {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
