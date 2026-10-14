@@ -30,7 +30,86 @@ function uploadStreamToCloudinary(buffer, fileName) {
   });
 }
 
-// 1. GET /api/papers - Get all papers from MongoDB
+// 0. GET /api/papers/cloudinary-sign - Direct Cloudinary upload signature (Bypasses Vercel 4.5MB limit)
+router.get('/cloudinary-sign', (req, res) => {
+  try {
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const folder = 'cec_pyq_hub';
+    const signature = cloudinary.utils.api_sign_request(
+      { folder, timestamp },
+      process.env.CLOUDINARY_API_SECRET
+    );
+
+    res.json({
+      success: true,
+      signature,
+      timestamp,
+      folder,
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+      apiKey: process.env.CLOUDINARY_API_KEY,
+    });
+  } catch (error) {
+    console.error('Signature error:', error);
+    res.status(500).json({ success: false, message: 'Failed to generate upload signature' });
+  }
+});
+
+// 1. POST /api/papers/save-metadata - Save metadata after direct-to-cloud upload
+router.post('/save-metadata', async (req, res) => {
+  try {
+    const {
+      subjectName,
+      subjectCode,
+      branch,
+      branchName,
+      semester,
+      examType,
+      year,
+      fileUrl,
+      cloudinaryPublicId,
+      fileName,
+      fileType,
+      fileSize,
+      uploaderName,
+      uploaderEmail,
+    } = req.body;
+
+    if (!subjectName || !branch || !semester || !year || !fileUrl) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required paper fields or fileUrl',
+      });
+    }
+
+    const newPaper = await Paper.create({
+      subjectName,
+      subjectCode: subjectCode || '',
+      branch,
+      branchName: branchName || branch.toUpperCase(),
+      semester: Number(semester),
+      examType: examType || 'end-sem',
+      year,
+      fileUrl,
+      cloudinaryPublicId: cloudinaryPublicId || '',
+      fileName: fileName || `${subjectName}_${year}.pdf`,
+      fileType: fileType || 'application/pdf',
+      fileSize: fileSize || 0,
+      uploaderName: uploaderName || 'CEC Student',
+      uploaderEmail: uploaderEmail || '',
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Paper saved to MongoDB Atlas successfully!',
+      paper: newPaper,
+    });
+  } catch (error) {
+    console.error('Error saving metadata:', error);
+    res.status(500).json({ success: false, message: error.message || 'Failed to save paper metadata' });
+  }
+});
+
+// 2. GET /api/papers - Get all papers from MongoDB
 router.get('/', async (req, res) => {
   try {
     const papers = await Paper.find().sort({ createdAt: -1 });
@@ -40,6 +119,7 @@ router.get('/', async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error while fetching papers' });
   }
 });
+
 
 // 2. POST /api/papers/upload - Upload file to Cloudinary & save metadata in MongoDB
 router.post('/upload', upload.single('file'), async (req, res) => {

@@ -28,9 +28,72 @@ export async function fetchAllPapers() {
   }
 }
 
-// Upload paper (sends file to Cloudinary & saves metadata in MongoDB)
+// Upload paper (Direct to Cloudinary to bypass Vercel 4.5MB limit, then save metadata in MongoDB)
 export async function uploadPaperToServer(paperData, file) {
   try {
+    let fileUrl = '';
+    let cloudinaryPublicId = '';
+    let fileName = file?.name || paperData.fileName || `${paperData.subjectName}_${paperData.year}.pdf`;
+    let fileType = file?.type || paperData.fileType || 'application/pdf';
+    let fileSize = file?.size || 0;
+
+    // Step 1: Direct Cloudinary Signed Upload (bypasses Vercel 4.5MB limit entirely)
+    try {
+      const signRes = await fetch(`${API_BASE}/cloudinary-sign`);
+      if (signRes.ok) {
+        const signData = await signRes.json();
+        if (signData.success && signData.signature) {
+          const cldFormData = new FormData();
+          cldFormData.append('file', file || paperData.fileDataUrl);
+          cldFormData.append('api_key', signData.apiKey);
+          cldFormData.append('timestamp', signData.timestamp);
+          cldFormData.append('signature', signData.signature);
+          cldFormData.append('folder', signData.folder);
+
+          const cldUploadRes = await fetch(
+            `https://api.cloudinary.com/v1_1/${signData.cloudName}/auto/upload`,
+            {
+              method: 'POST',
+              body: cldFormData,
+            }
+          );
+
+          if (cldUploadRes.ok) {
+            const cldJson = await cldUploadRes.json();
+            fileUrl = cldJson.secure_url;
+            cloudinaryPublicId = cldJson.public_id;
+            fileType = cldJson.format ? `application/${cldJson.format}` : fileType;
+          }
+        }
+      }
+    } catch (directErr) {
+      console.warn('Direct Cloudinary signed upload skipped, trying standard upload:', directErr.message);
+    }
+
+    // Step 2: If Direct Upload Succeeded, save metadata JSON to MongoDB Atlas
+    if (fileUrl) {
+      const metaRes = await fetch(`${API_BASE}/save-metadata`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...paperData,
+          fileUrl,
+          cloudinaryPublicId,
+          fileName,
+          fileType,
+          fileSize,
+        }),
+      });
+
+      if (metaRes.ok) {
+        const metaData = await metaRes.json();
+        if (metaData.success && metaData.paper) {
+          return { success: true, paper: metaData.paper, cloud: true };
+        }
+      }
+    }
+
+    // Step 3: Fallback standard backend upload
     const formData = new FormData();
     formData.append('subjectName', paperData.subjectName);
     formData.append('subjectCode', paperData.subjectCode || '');
@@ -46,8 +109,8 @@ export async function uploadPaperToServer(paperData, file) {
       formData.append('file', file);
     } else if (paperData.fileDataUrl) {
       formData.append('fileDataUrl', paperData.fileDataUrl);
-      formData.append('fileName', paperData.fileName);
-      formData.append('fileType', paperData.fileType);
+      formData.append('fileName', fileName);
+      formData.append('fileType', fileType);
     }
 
     const res = await fetch(`${API_BASE}/upload`, {
