@@ -22,7 +22,15 @@ export const SEMESTERS = [
   { value: 8, label: 'Sem 8' },
 ];
 
-export const YEARS = ['All Years', '2025', '2024', '2023', '2022', '2021', '2020'];
+// Dynamically generate years from the current year down to 2010.
+// When 2027, 2028 or any future year arrives, it will automatically appear at the top!
+const currentYear = new Date().getFullYear();
+const startYear = 2010;
+
+export const YEARS = [
+  'All Years',
+  ...Array.from({ length: Math.max(0, currentYear - startYear + 1) }, (_, i) => String(currentYear - i)),
+];
 
 // Clean empty starting state - no dummy data!
 export const INITIAL_PAPERS = [];

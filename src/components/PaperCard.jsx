@@ -26,7 +26,15 @@ export default function PaperCard({
             <Calendar size={12} style={{ marginRight: 3, verticalAlign: -1 }} />
             {paper.year}
           </span>
-          <span className="tag-sem">{paper.examType === 'mid-sem' ? 'Mid-Sem' : 'End-Sem'}</span>
+          <span className="tag-sem">
+            {paper.examType === 'internal-1'
+              ? 'Internal 1'
+              : paper.examType === 'internal-2'
+              ? 'Internal 2'
+              : paper.examType === 'mid-sem'
+              ? 'Internal 1'
+              : 'External'}
+          </span>
         </div>
 
         {/* Title */}

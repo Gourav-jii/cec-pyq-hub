@@ -1332,18 +1332,194 @@ img {
 }
 
 /* ==========================================================================
-   FOOTER & TOAST
+   CLEAN & MINIMAL FOOTER
    ========================================================================== */
 
 .clean-footer {
-  background: #ffffff;
+  background: var(--bg-surface);
   border-top: 1px solid var(--border-subtle);
   padding: 24px 0;
-  text-align: center;
-  margin-top: 48px;
-  font-size: 0.82rem;
+  margin-top: 50px;
   color: var(--text-muted);
+  font-size: 0.85rem;
 }
+
+.footer-simple-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-simple-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-simple-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.brand-names {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  color: var(--text-main);
+}
+
+.brand-names strong {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.dot-sep {
+  color: var(--text-light);
+  font-size: 0.8rem;
+}
+
+.footer-simple-sub {
+  font-size: 0.8rem;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.inline-heart {
+  animation: heart-pulse 1.8s ease infinite;
+  vertical-align: middle;
+}
+
+@keyframes heart-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}
+
+.dev-name-link {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.dev-name-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+.footer-simple-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-social-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-circle-link {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.social-circle-link:hover {
+  transform: translateY(-2px);
+}
+
+.social-circle-link.linkedin:hover {
+  background: #0a66c2;
+  border-color: #0a66c2;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(10, 102, 194, 0.25);
+}
+
+.social-circle-link.github:hover {
+  background: #181717;
+  border-color: #181717;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(24, 23, 23, 0.25);
+}
+
+.social-circle-link.instagram:hover {
+  background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(220, 39, 67, 0.3);
+}
+
+.social-circle-link.mail:hover {
+  background: #ea4335;
+  border-color: #ea4335;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(234, 67, 53, 0.25);
+}
+
+.footer-simple-copy {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .clean-footer {
+    padding: 20px 0;
+    text-align: center;
+  }
+
+  .footer-simple-inner {
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .footer-simple-brand {
+    align-items: center;
+  }
+
+  .brand-badge {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .brand-names .dot-sep {
+    display: none;
+  }
+
+  .brand-names {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .footer-simple-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
 
 /* ==========================================================================
    MODERN TOAST NOTIFICATION SYSTEM

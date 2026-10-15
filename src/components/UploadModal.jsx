@@ -12,8 +12,8 @@ export default function UploadModal({
   const [semester, setSemester] = useState(5);
   const [subjectName, setSubjectName] = useState('');
   const [subjectCode, setSubjectCode] = useState('');
-  const [examType, setExamType] = useState('end-sem');
-  const [year, setYear] = useState('2024');
+  const [examType, setExamType] = useState('external');
+  const [year, setYear] = useState(() => String(new Date().getFullYear()));
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileDataUrl, setFileDataUrl] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
@@ -188,8 +188,9 @@ export default function UploadModal({
                     value={examType}
                     onChange={(e) => setExamType(e.target.value)}
                   >
-                    <option value="end-sem">End-Sem (JUT Final)</option>
-                    <option value="mid-sem">Mid-Sem (Internal)</option>
+                    <option value="internal-1">Internal 1</option>
+                    <option value="internal-2">Internal 2</option>
+                    <option value="external">External</option>
                   </select>
                 </div>
 

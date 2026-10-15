@@ -214,7 +214,9 @@ export default function App() {
         const matchSubj = p.subjectName?.toLowerCase().includes(q);
         const matchCode = p.subjectCode?.toLowerCase().includes(q);
         const matchBranch = p.branchName?.toLowerCase().includes(q);
-        if (!matchSubj && !matchCode && !matchBranch) return false;
+        const matchYear = String(p.year || '').includes(q);
+        const matchType = String(p.examType || '').toLowerCase().includes(q);
+        if (!matchSubj && !matchCode && !matchBranch && !matchYear && !matchType) return false;
       }
 
       // Branch

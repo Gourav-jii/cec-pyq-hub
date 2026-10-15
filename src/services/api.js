@@ -114,7 +114,7 @@ export async function uploadPaperToServer(paperData, file) {
     formData.append('branch', paperData.branch);
     formData.append('branchName', paperData.branchName);
     formData.append('semester', paperData.semester);
-    formData.append('examType', paperData.examType || 'end-sem');
+    formData.append('examType', paperData.examType || 'external');
     formData.append('year', paperData.year);
     formData.append('uploaderName', paperData.uploaderName);
     formData.append('uploaderEmail', paperData.uploaderEmail);

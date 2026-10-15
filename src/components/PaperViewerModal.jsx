@@ -40,7 +40,7 @@ export default function PaperViewerModal({ paper, onClose, onDownload }) {
               {paper.subjectName}
             </h3>
             <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {paper.branchName || paper.branch?.toUpperCase()} • Sem {paper.semester} • {paper.year}
+              {paper.branchName || paper.branch?.toUpperCase()} • Sem {paper.semester} • {paper.examType === 'internal-1' ? 'Internal 1' : paper.examType === 'internal-2' ? 'Internal 2' : 'External'} • {paper.year}
             </div>
           </div>
 

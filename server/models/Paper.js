@@ -29,8 +29,8 @@ const paperSchema = new mongoose.Schema(
     },
     examType: {
       type: String,
-      enum: ['mid-sem', 'end-sem'],
-      default: 'end-sem',
+      enum: ['internal-1', 'internal-2', 'external', 'mid-sem', 'end-sem'],
+      default: 'external',
     },
     year: {
       type: String,
