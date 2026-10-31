@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Upload, FileCheck, AlertCircle, LogIn } from 'lucide-react';
+import { X, Upload, FileCheck, AlertCircle, LogIn, ExternalLink } from 'lucide-react';
 import { BRANCHES, YEARS } from '../data/initialData';
 
 export default function UploadModal({
@@ -17,6 +17,7 @@ export default function UploadModal({
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileDataUrl, setFileDataUrl] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
+  const [isTooLarge, setIsTooLarge] = useState(false);
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB Cloudinary Free Tier Limit
 
@@ -24,13 +25,15 @@ export default function UploadModal({
     if (!file) return;
     if (file.size > MAX_FILE_SIZE) {
       setErrorMsg(
-        `File size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 10MB limit. Please compress your PDF (e.g. using iLovePDF) before uploading.`
+        `File size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds 10MB limit! Please PDF ko compress karke upload karein.`
       );
+      setIsTooLarge(true);
       setSelectedFile(null);
       setFileDataUrl(null);
       return;
     }
     setSelectedFile(file);
+    setIsTooLarge(false);
     setErrorMsg('');
 
     // Only read Data URL for small files (<2MB) to save mobile browser memory
@@ -114,9 +117,38 @@ export default function UploadModal({
           ) : (
             <form onSubmit={handleSubmit}>
               {errorMsg && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px', background: '#fee2e2', color: '#dc2626', borderRadius: 8, marginBottom: 14, fontSize: '0.85rem' }}>
-                  <AlertCircle size={16} />
-                  <span>{errorMsg}</span>
+                <div style={{ padding: '12px', background: '#fee2e2', border: '1px solid #fecaca', color: '#b91c1c', borderRadius: 8, marginBottom: 14, fontSize: '0.86rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                    <AlertCircle size={18} style={{ flexShrink: 0, marginTop: 2, color: '#dc2626' }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 600 }}>{errorMsg}</div>
+                      {isTooLarge && (
+                        <div style={{ marginTop: 8 }}>
+                          <a
+                            href="https://www.ilovepdf.com/compress_pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 6,
+                              background: '#dc2626',
+                              color: '#ffffff',
+                              padding: '6px 12px',
+                              borderRadius: 6,
+                              fontSize: '0.82rem',
+                              fontWeight: 700,
+                              textDecoration: 'none',
+                              boxShadow: '0 1px 3px rgba(220,38,38,0.3)',
+                            }}
+                          >
+                            <span>iLovePDF par Free Compress karein</span>
+                            <ExternalLink size={13} />
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -220,7 +252,7 @@ export default function UploadModal({
                     Click to choose PDF or Image file
                   </div>
                   <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
-                    Supports PDF, JPG, PNG
+                    Supports PDF, JPG, PNG (Max 10MB)
                   </div>
                   <input 
                     type="file" 
@@ -229,6 +261,27 @@ export default function UploadModal({
                     accept=".pdf,image/*"
                     onChange={(e) => handleFileChange(e.target.files[0])}
                   />
+                </div>
+
+                {/* Helper info & Compress shortcut */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6, marginTop: 6, fontSize: '0.78rem', color: '#64748b' }}>
+                  <span>Limit: <strong>10MB</strong> per paper</span>
+                  <a
+                    href="https://www.ilovepdf.com/compress_pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      color: '#2563eb',
+                      fontWeight: 600,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <span>PDF compress karna hai? (iLovePDF)</span>
+                    <ExternalLink size={12} />
+                  </a>
                 </div>
 
                 {selectedFile && (
