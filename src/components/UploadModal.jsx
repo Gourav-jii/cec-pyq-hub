@@ -263,9 +263,24 @@ export default function UploadModal({
                   />
                 </div>
 
-                {/* Helper info & Compress shortcut */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6, marginTop: 6, fontSize: '0.78rem', color: '#64748b' }}>
-                  <span>Limit: <strong>10MB</strong> per paper</span>
+                {/* Dedicated iLovePDF Compress Banner */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: 8,
+                  padding: '9px 12px',
+                  background: '#eff6ff',
+                  border: '1px solid #bfdbfe',
+                  borderRadius: 8,
+                  marginTop: 10,
+                  fontSize: '0.82rem',
+                }}>
+                  <div style={{ color: '#1e40af', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontWeight: 600 }}>PDF 10MB se badi hai?</span>
+                    <span style={{ color: '#64748b', fontSize: '0.78rem' }}>(Max limit 10MB)</span>
+                  </div>
                   <a
                     href="https://www.ilovepdf.com/compress_pdf"
                     target="_blank"
@@ -273,14 +288,19 @@ export default function UploadModal({
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: 4,
-                      color: '#2563eb',
+                      gap: 5,
+                      background: '#2563eb',
+                      color: '#ffffff',
+                      padding: '5px 12px',
+                      borderRadius: 6,
+                      fontSize: '0.8rem',
                       fontWeight: 600,
                       textDecoration: 'none',
+                      boxShadow: '0 1px 2px rgba(37,99,235,0.25)',
                     }}
                   >
-                    <span>PDF compress karna hai? (iLovePDF)</span>
-                    <ExternalLink size={12} />
+                    <span>iLovePDF Compress Tool</span>
+                    <ExternalLink size={13} />
                   </a>
                 </div>
 
